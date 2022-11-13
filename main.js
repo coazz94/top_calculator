@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () =>{
     // block = differentiate between first and aditional calculations (2+3-4) // 2+3 ist first calc, -4 is second Part
     // num_blocked = is the number that will not be shown, but saved in background
     const output = document.getElementById("ouputtext");
+    const dot_butt = document.getElementById("dot")
     let num1 = "";
     let operator = "";
     let block = false;
@@ -16,14 +17,19 @@ document.addEventListener("DOMContentLoaded", () =>{
             // If button classname is num, button with a number was clicked
             if (element.className === "num"){
                 // If first number update the text, use of block, else save the number in the background to num_blocked
+                if(element.value == "."){
+                    dot_butt.disabled = true
+                }
                 if(!block){
-                    output.innerHTML=""
                     updateText(element.value);
                 }else{
                     num_blocked =  num_blocked + element.value;
                 }
+
             // if classname calcf_, a operator was choosen
             }else if(element.className === "calcf"){
+                // enable the dot again
+                dot_butt.disabled = false
                 // if num1 and operator empty, it is the first calculation
                 if (num1 != "" && operator != ""){
                     // block than second operator choosen, than num2 is num_blocked
@@ -46,6 +52,7 @@ document.addEventListener("DOMContentLoaded", () =>{
                 }
             // calcf_3 = "=", show the result of the calc
             }else if(element.className === "calcf_3"){
+                dot_butt.disabled = false
                 let num2 = output.innerHTML;
                 let result = operate(num1, num2, operator);
                 output.innerHTML = result;
@@ -53,6 +60,7 @@ document.addEventListener("DOMContentLoaded", () =>{
                 block = false;
             // calcf_4 = erase the text
             }else if (element.className === "calcf_4"){
+                dot_butt.disabled = false
                 num1 = operator = num_blocked = "";
                 output.innerHTML = "";
                 block = false;
@@ -65,6 +73,7 @@ document.addEventListener("DOMContentLoaded", () =>{
 function updateText(a){
     // Get the text in the html that was already entered
     const x = document.getElementById("ouputtext").innerHTML;
+    console.log(document.getElementById("ouputtext").innerHTML)
     // Add the new number
     document.getElementById("ouputtext").innerHTML = x + a;
 }
