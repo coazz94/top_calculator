@@ -1,54 +1,65 @@
 document.addEventListener("DOMContentLoaded", () =>{
 
+    // num1, num2 = Numbers for operation, operator = +,-,*,/ 
+    // output = the text shown on the calculator
+    // block = differentiate between first and aditional calculations (2+3-4) // 2+3 ist first calc, -4 is second Part
+    // num_blocked = is the number that will not be shown, but saved in background
     const output = document.getElementById("ouputtext");
     let num1 = "";
     let operator = "";
     let block = false;
-    let num_extern = "";
+    let num_blocked = "";
 
-
+    // query for all buttons and listen for the click
     document.querySelectorAll('button').forEach((element) =>{
         element.addEventListener("click", () =>{
+            // If button classname is num, button with a number was clicked
             if (element.className === "num"){
+                // If first number update the text, use of block, else save the number in the background to num_blocked
                 if(!block){
+                    output.innerHTML=""
                     updateText(element.value);
                 }else{
-                    num_extern =  num_extern + element.value;
+                    num_blocked =  num_blocked + element.value;
                 }
-
+            // if classname calcf_, a operator was choosen
             }else if(element.className === "calcf"){
-
+                // if num1 and operator empty, it is the first calculation
                 if (num1 != "" && operator != ""){
+                    // block than second operator choosen, than num2 is num_blocked
                     if(!block){
                         num2 = output.innerHTML;
                     }else{
-                        console.log("NUMEXTERN", num_extern)
-                        num2 = num_extern;
+                        num2 = num_blocked;
                     }
-                    console.log("here", "num1",num1,"num2", num2)
+                    // calc the new num1, change the textshown to it, block = true  because first calc was finished
                     num1 = operate(num1, num2, operator)
                     output.innerHTML = num1;
                     block = true;
-                    num_extern = "";
+                    num_blocked = "";
+                    operator = element.value;
+                // else make first calc
                 }else{
                     num1 = output.innerHTML;
                     output.innerHTML = "";
-                    operator = element.value
+                    operator = element.value;
                 }
-
-
-
-            }else if(element.className === "calcf3"){
+            // calcf_3 = "=", show the result of the calc
+            }else if(element.className === "calcf_3"){
                 let num2 = output.innerHTML;
-                operate(num1, num2, operator);
+                let result = operate(num1, num2, operator);
+                output.innerHTML = result;
+                num1 = operator = num_blocked = "";
+                block = false;
+            // calcf_4 = erase the text
+            }else if (element.className === "calcf_4"){
+                num1 = operator = num_blocked = "";
+                output.innerHTML = "";
+                block = false;
             }
-
         })
     })
-
-
 })
-
 
 
 function updateText(a){
@@ -60,27 +71,25 @@ function updateText(a){
 
 
 function operate(num1, num2,  operator){
-
-    let number1 = parseInt(num1)
-    let number2 = parseInt(num2)
-    let result = 0;
+    // Covnert the string to a number
+    let number1 = parseFloat(num1);
+    let number2 = parseFloat(num2);
+    let result = Number;
     
+    // depending on the operator make the result
     if (operator === "add"){
-        result = number1 + number2
+        result = number1 + number2;
     }else if (operator === "subst"){
         result = number1 - number2;
     }else if (operator === "multiply"){
         result = number1 * number2;
     }else if (operator === "divide"){
-        result = number1 / number2;
+        // Check if dividgin by 0
+        if(number2 == 0){
+            result = "error";
+        }else{
+            result = number1 / number2;
+        }
     }
-
-
     return result;
-}
-
-
-
-function add(a, b){
-    return a+b
 }
